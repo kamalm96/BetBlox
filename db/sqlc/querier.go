@@ -12,23 +12,40 @@ import (
 type Querier interface {
 	CheckVerification(ctx context.Context, id int64) (sql.NullBool, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (CreateAccountRow, error)
+	CreateContract(ctx context.Context, arg CreateContractParams) (Contract, error)
 	CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error)
+	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
+	CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error)
+	DeleteContract(ctx context.Context, id int64) error
 	DeleteMarket(ctx context.Context, id int64) error
+	DeleteOrder(ctx context.Context, id int64) error
+	DeleteTrade(ctx context.Context, id int64) error
 	DeleteUser(ctx context.Context, id int64) error
+	GetContract(ctx context.Context, id int64) (Contract, error)
 	GetKyc(ctx context.Context, userID int64) (KycVerification, error)
 	GetMarket(ctx context.Context, id int64) (Market, error)
+	GetOrder(ctx context.Context, id int64) (Order, error)
+	GetResolution(ctx context.Context, marketID int64) (MarketResolution, error)
+	GetTrade(ctx context.Context, id int64) (Trade, error)
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)
 	GetWallet(ctx context.Context, userID int64) (Wallet, error)
+	IsMarketResolved(ctx context.Context, marketID int64) (bool, error)
 	ListAllMarkets(ctx context.Context, arg ListAllMarketsParams) ([]Market, error)
+	ListContracts(ctx context.Context, arg ListContractsParams) ([]Contract, error)
 	ListKycs(ctx context.Context, arg ListKycsParams) ([]KycVerification, error)
 	ListOpenMarkets(ctx context.Context, arg ListOpenMarketsParams) ([]Market, error)
+	ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error)
+	ListResolutions(ctx context.Context, arg ListResolutionsParams) ([]MarketResolution, error)
+	ListTrades(ctx context.Context, arg ListTradesParams) ([]Trade, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
 	ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]sql.NullBool, error)
 	ListWallets(ctx context.Context, arg ListWalletsParams) ([]Wallet, error)
 	LogAudit(ctx context.Context, arg LogAuditParams) error
+	MarkAsResolved(ctx context.Context, arg MarkAsResolvedParams) (MarketResolution, error)
 	ResolveMarket(ctx context.Context, arg ResolveMarketParams) error
 	UpdateKycStatus(ctx context.Context, arg UpdateKycStatusParams) error
 	UpdateLocked(ctx context.Context, arg UpdateLockedParams) (Wallet, error)
+	UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusParams) error
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
 	UpdateVerification(ctx context.Context, arg UpdateVerificationParams) error
 	UpdateWallet(ctx context.Context, arg UpdateWalletParams) (Wallet, error)
