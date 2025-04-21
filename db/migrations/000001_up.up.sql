@@ -60,7 +60,7 @@ CREATE TABLE trades (
                         id BIGSERIAL PRIMARY KEY,
                         buy_order_id BIGINT,
                         sell_order_id BIGINT,
-                        contract_id BIGINT REFERENCES contracts(id),
+                        contract_id BIGINT REFERENCES contracts(id) ON DELETE CASCADE,
                         price_cents INT,
                         quantity INT,
                         executed_at TIMESTAMP DEFAULT NOW()
@@ -77,7 +77,7 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE market_resolution (
-                                   market_id BIGINT PRIMARY KEY REFERENCES markets(id),
+                                   market_id BIGINT PRIMARY KEY REFERENCES markets(id) ON DELETE CASCADE,
                                    outcome VARCHAR(10) CHECK (outcome IN ('YES', 'NO')),
                                    resolved_by BIGINT REFERENCES users(id),
                                    resolved_at TIMESTAMP DEFAULT NOW()
@@ -86,7 +86,7 @@ CREATE TABLE market_resolution (
 CREATE TABLE audit_logs (
                             id BIGSERIAL PRIMARY KEY,
                             user_id BIGINT REFERENCES users(id),
-                            action TEXT,
+                            action TEXT NOT NULL,
                             metadata JSONB,
                             ip_address INET,
                             created_at TIMESTAMP DEFAULT NOW()

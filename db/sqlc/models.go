@@ -14,7 +14,7 @@ import (
 type AuditLog struct {
 	ID        int64                 `json:"id"`
 	UserID    sql.NullInt64         `json:"user_id"`
-	Action    sql.NullString        `json:"action"`
+	Action    string                `json:"action"`
 	Metadata  pqtype.NullRawMessage `json:"metadata"`
 	IpAddress pqtype.Inet           `json:"ip_address"`
 	CreatedAt sql.NullTime          `json:"created_at"`

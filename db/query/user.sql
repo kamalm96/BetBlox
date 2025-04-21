@@ -7,7 +7,7 @@ RETURNING id, email, username, created_at;
 SELECT email, username, created_at, is_verified FROM users
 WHERE id = $1 LIMIT 1;
 
--- name: GetUsers :many
+-- name: ListUsers :many
 SELECT email, username, created_at, is_verified FROM users
 ORDER BY id
 LIMIT $1
@@ -20,6 +20,24 @@ DELETE FROM users WHERE id=$1;
 UPDATE users
 SET password_hash = $1
 WHERE email = $2;
+
+-- name: UpdateVerification :exec
+UPDATE users
+SET is_verified = $1
+WHERE id = $2;
+
+-- name: CheckVerification :one
+SELECT is_verified
+FROM users
+WHERE id = $1
+LIMIT 1;
+
+-- name: ListVerifications :many
+SELECT is_verified
+FROM users
+ORDER BY id
+LIMIT $1
+OFFSET $2;
 
 
 

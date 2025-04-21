@@ -10,6 +10,20 @@ import (
 	"database/sql"
 )
 
+const checkVerification = `-- name: CheckVerification :one
+SELECT is_verified
+FROM users
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) CheckVerification(ctx context.Context, id int64) (sql.NullBool, error) {
+	row := q.db.QueryRowContext(ctx, checkVerification, id)
+	var is_verified sql.NullBool
+	err := row.Scan(&is_verified)
+	return is_verified, err
+}
+
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO users (email, username, password_hash)
 VALUES ($1, $2, $3)
@@ -74,34 +88,34 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
 	return i, err
 }
 
-const getUsers = `-- name: GetUsers :many
+const listUsers = `-- name: ListUsers :many
 SELECT email, username, created_at, is_verified FROM users
 ORDER BY id
 LIMIT $1
 OFFSET $2
 `
 
-type GetUsersParams struct {
+type ListUsersParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-type GetUsersRow struct {
+type ListUsersRow struct {
 	Email      string         `json:"email"`
 	Username   sql.NullString `json:"username"`
 	CreatedAt  sql.NullTime   `json:"created_at"`
 	IsVerified sql.NullBool   `json:"is_verified"`
 }
 
-func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error) {
-	rows, err := q.db.QueryContext(ctx, getUsers, arg.Limit, arg.Offset)
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetUsersRow{}
+	items := []ListUsersRow{}
 	for rows.Next() {
-		var i GetUsersRow
+		var i ListUsersRow
 		if err := rows.Scan(
 			&i.Email,
 			&i.Username,
@@ -111,6 +125,42 @@ func (q *Queries) GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersR
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listVerifications = `-- name: ListVerifications :many
+SELECT is_verified
+FROM users
+ORDER BY id
+LIMIT $1
+OFFSET $2
+`
+
+type ListVerificationsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]sql.NullBool, error) {
+	rows, err := q.db.QueryContext(ctx, listVerifications, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []sql.NullBool{}
+	for rows.Next() {
+		var is_verified sql.NullBool
+		if err := rows.Scan(&is_verified); err != nil {
+			return nil, err
+		}
+		items = append(items, is_verified)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
@@ -134,5 +184,21 @@ type UpdateUserPasswordParams struct {
 
 func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
 	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.PasswordHash, arg.Email)
+	return err
+}
+
+const updateVerification = `-- name: UpdateVerification :exec
+UPDATE users
+SET is_verified = $1
+WHERE id = $2
+`
+
+type UpdateVerificationParams struct {
+	IsVerified sql.NullBool `json:"is_verified"`
+	ID         int64        `json:"id"`
+}
+
+func (q *Queries) UpdateVerification(ctx context.Context, arg UpdateVerificationParams) error {
+	_, err := q.db.ExecContext(ctx, updateVerification, arg.IsVerified, arg.ID)
 	return err
 }
