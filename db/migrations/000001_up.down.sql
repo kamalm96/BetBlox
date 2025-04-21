@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS market_resolution;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS trades;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS contracts;
+DROP TABLE IF EXISTS markets;
+DROP TABLE IF EXISTS wallets;
+DROP TABLE IF EXISTS kyc_verification;
+DROP TABLE IF EXISTS users;
