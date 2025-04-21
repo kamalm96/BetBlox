@@ -6,14 +6,32 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Querier interface {
+	CheckVerification(ctx context.Context, id int64) (sql.NullBool, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (CreateAccountRow, error)
+	CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error)
+	DeleteMarket(ctx context.Context, id int64) error
 	DeleteUser(ctx context.Context, id int64) error
+	GetKyc(ctx context.Context, userID int64) (KycVerification, error)
+	GetMarket(ctx context.Context, id int64) (Market, error)
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)
-	GetUsers(ctx context.Context, arg GetUsersParams) ([]GetUsersRow, error)
+	GetWallet(ctx context.Context, userID int64) (Wallet, error)
+	ListAllMarkets(ctx context.Context, arg ListAllMarketsParams) ([]Market, error)
+	ListKycs(ctx context.Context, arg ListKycsParams) ([]KycVerification, error)
+	ListOpenMarkets(ctx context.Context, arg ListOpenMarketsParams) ([]Market, error)
+	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
+	ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]sql.NullBool, error)
+	ListWallets(ctx context.Context, arg ListWalletsParams) ([]Wallet, error)
+	LogAudit(ctx context.Context, arg LogAuditParams) error
+	ResolveMarket(ctx context.Context, arg ResolveMarketParams) error
+	UpdateKycStatus(ctx context.Context, arg UpdateKycStatusParams) error
+	UpdateLocked(ctx context.Context, arg UpdateLockedParams) (Wallet, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
+	UpdateVerification(ctx context.Context, arg UpdateVerificationParams) error
+	UpdateWallet(ctx context.Context, arg UpdateWalletParams) (Wallet, error)
 }
 
 var _ Querier = (*Queries)(nil)
