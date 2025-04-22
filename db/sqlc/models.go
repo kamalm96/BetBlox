@@ -89,12 +89,12 @@ type Transaction struct {
 }
 
 type User struct {
-	ID           int64          `json:"id"`
-	Email        string         `json:"email"`
-	PasswordHash string         `json:"password_hash"`
-	Username     sql.NullString `json:"username"`
-	CreatedAt    sql.NullTime   `json:"created_at"`
-	IsVerified   sql.NullBool   `json:"is_verified"`
+	ID           int64        `json:"id"`
+	Email        string       `json:"email"`
+	PasswordHash string       `json:"password_hash"`
+	Username     string       `json:"username"`
+	CreatedAt    sql.NullTime `json:"created_at"`
+	IsVerified   sql.NullBool `json:"is_verified"`
 }
 
 type Wallet struct {

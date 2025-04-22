@@ -2,7 +2,7 @@ CREATE TABLE users (
                        id BIGSERIAL PRIMARY KEY,
                        email VARCHAR(255) UNIQUE NOT NULL,
                        password_hash VARCHAR(255) NOT NULL,
-                       username VARCHAR(50) UNIQUE,
+                       username VARCHAR(50) UNIQUE NOT NULL,
                        created_at TIMESTAMP DEFAULT NOW(),
                        is_verified BOOLEAN DEFAULT FALSE
 );
