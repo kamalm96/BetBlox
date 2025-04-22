@@ -16,17 +16,20 @@ type Querier interface {
 	CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error)
 	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
 	CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error)
+	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
 	DeleteContract(ctx context.Context, id int64) error
 	DeleteMarket(ctx context.Context, id int64) error
 	DeleteOrder(ctx context.Context, id int64) error
 	DeleteTrade(ctx context.Context, id int64) error
 	DeleteUser(ctx context.Context, id int64) error
+	GetAllTransactions(ctx context.Context, arg GetAllTransactionsParams) ([]Transaction, error)
 	GetContract(ctx context.Context, id int64) (Contract, error)
 	GetKyc(ctx context.Context, userID int64) (KycVerification, error)
 	GetMarket(ctx context.Context, id int64) (Market, error)
 	GetOrder(ctx context.Context, id int64) (Order, error)
 	GetResolution(ctx context.Context, marketID int64) (MarketResolution, error)
 	GetTrade(ctx context.Context, id int64) (Trade, error)
+	GetTransactionById(ctx context.Context, id int64) (Transaction, error)
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)
 	GetWallet(ctx context.Context, userID int64) (Wallet, error)
 	IsMarketResolved(ctx context.Context, marketID int64) (bool, error)
@@ -46,6 +49,7 @@ type Querier interface {
 	UpdateKycStatus(ctx context.Context, arg UpdateKycStatusParams) error
 	UpdateLocked(ctx context.Context, arg UpdateLockedParams) (Wallet, error)
 	UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusParams) error
+	UpdateResolution(ctx context.Context, arg UpdateResolutionParams) (MarketResolution, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
 	UpdateVerification(ctx context.Context, arg UpdateVerificationParams) error
 	UpdateWallet(ctx context.Context, arg UpdateWalletParams) (Wallet, error)
