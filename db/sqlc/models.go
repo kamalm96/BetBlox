@@ -6,6 +6,7 @@ package db
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/sqlc-dev/pqtype"
@@ -29,13 +30,13 @@ type Contract struct {
 }
 
 type KycVerification struct {
-	UserID      int64          `json:"user_id"`
-	SsnLast4    sql.NullString `json:"ssn_last4"`
-	Dob         sql.NullTime   `json:"dob"`
-	Address     sql.NullString `json:"address"`
-	KycStatus   sql.NullString `json:"kyc_status"`
-	SubmittedAt sql.NullTime   `json:"submitted_at"`
-	VerifiedAt  sql.NullTime   `json:"verified_at"`
+	UserID      int64        `json:"user_id"`
+	SsnLast4    string       `json:"ssn_last4"`
+	Dob         time.Time    `json:"dob"`
+	Address     string       `json:"address"`
+	KycStatus   bool         `json:"kyc_status"`
+	SubmittedAt time.Time    `json:"submitted_at"`
+	VerifiedAt  sql.NullTime `json:"verified_at"`
 }
 
 type Market struct {
@@ -94,7 +95,7 @@ type User struct {
 	PasswordHash string       `json:"password_hash"`
 	Username     string       `json:"username"`
 	CreatedAt    sql.NullTime `json:"created_at"`
-	IsVerified   sql.NullBool `json:"is_verified"`
+	IsVerified   bool         `json:"is_verified"`
 }
 
 type Wallet struct {

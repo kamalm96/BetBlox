@@ -92,3 +92,18 @@ func TestUpdateUserPassword(t *testing.T) {
 	err = bcrypt.CompareHashAndPassword([]byte(updatedAccount.PasswordHash), []byte("12345"))
 	require.NoError(t, err)
 }
+
+func TestUpdateVerification(t *testing.T) {
+
+	account := CreateRandomAccount(t)
+	require.NotEmpty(t, account)
+
+	err := testQueries.UpdateVerification(context.Background(), UpdateVerificationParams{
+		IsVerified: true,
+		ID:         account.ID,
+	})
+	updatedVerificationAccount, err := testQueries.GetUser(context.Background(), account.ID)
+	require.NoError(t, err)
+	require.True(t, updatedVerificationAccount.IsVerified)
+
+}

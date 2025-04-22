@@ -8,7 +8,47 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
+
+const createKyc = `-- name: CreateKyc :one
+INSERT INTO kyc_verification (user_id, ssn_last4, dob, address, kyc_status, submitted_at, verified_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING user_id, ssn_last4, dob, address, kyc_status, submitted_at, verified_at
+`
+
+type CreateKycParams struct {
+	UserID      int64        `json:"user_id"`
+	SsnLast4    string       `json:"ssn_last4"`
+	Dob         time.Time    `json:"dob"`
+	Address     string       `json:"address"`
+	KycStatus   bool         `json:"kyc_status"`
+	SubmittedAt time.Time    `json:"submitted_at"`
+	VerifiedAt  sql.NullTime `json:"verified_at"`
+}
+
+func (q *Queries) CreateKyc(ctx context.Context, arg CreateKycParams) (KycVerification, error) {
+	row := q.db.QueryRowContext(ctx, createKyc,
+		arg.UserID,
+		arg.SsnLast4,
+		arg.Dob,
+		arg.Address,
+		arg.KycStatus,
+		arg.SubmittedAt,
+		arg.VerifiedAt,
+	)
+	var i KycVerification
+	err := row.Scan(
+		&i.UserID,
+		&i.SsnLast4,
+		&i.Dob,
+		&i.Address,
+		&i.KycStatus,
+		&i.SubmittedAt,
+		&i.VerifiedAt,
+	)
+	return i, err
+}
 
 const getKyc = `-- name: GetKyc :one
 SELECT user_id, ssn_last4, dob, address, kyc_status, submitted_at, verified_at FROM kyc_verification
@@ -78,8 +118,8 @@ RETURNING user_id, ssn_last4, dob, address, kyc_status, submitted_at, verified_a
 `
 
 type UpdateKycStatusParams struct {
-	UserID    int64          `json:"user_id"`
-	KycStatus sql.NullString `json:"kyc_status"`
+	UserID    int64 `json:"user_id"`
+	KycStatus bool  `json:"kyc_status"`
 }
 
 func (q *Queries) UpdateKycStatus(ctx context.Context, arg UpdateKycStatusParams) error {

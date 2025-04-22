@@ -6,13 +6,13 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 type Querier interface {
-	CheckVerification(ctx context.Context, id int64) (sql.NullBool, error)
+	CheckVerification(ctx context.Context, id int64) (bool, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (CreateAccountRow, error)
 	CreateContract(ctx context.Context, arg CreateContractParams) (Contract, error)
+	CreateKyc(ctx context.Context, arg CreateKycParams) (KycVerification, error)
 	CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error)
 	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
 	CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error)
@@ -41,7 +41,7 @@ type Querier interface {
 	ListResolutions(ctx context.Context, arg ListResolutionsParams) ([]MarketResolution, error)
 	ListTrades(ctx context.Context, arg ListTradesParams) ([]Trade, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
-	ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]sql.NullBool, error)
+	ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]bool, error)
 	ListWallets(ctx context.Context, arg ListWalletsParams) ([]Wallet, error)
 	LogAudit(ctx context.Context, arg LogAuditParams) error
 	MarkAsResolved(ctx context.Context, arg MarkAsResolvedParams) (MarketResolution, error)
