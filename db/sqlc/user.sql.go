@@ -31,16 +31,16 @@ RETURNING id, email, username, created_at
 `
 
 type CreateAccountParams struct {
-	Email        string         `json:"email"`
-	Username     sql.NullString `json:"username"`
-	PasswordHash string         `json:"password_hash"`
+	Email        string `json:"email"`
+	Username     string `json:"username"`
+	PasswordHash string `json:"password_hash"`
 }
 
 type CreateAccountRow struct {
-	ID        int64          `json:"id"`
-	Email     string         `json:"email"`
-	Username  sql.NullString `json:"username"`
-	CreatedAt sql.NullTime   `json:"created_at"`
+	ID        int64        `json:"id"`
+	Email     string       `json:"email"`
+	Username  string       `json:"username"`
+	CreatedAt sql.NullTime `json:"created_at"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (CreateAccountRow, error) {
@@ -65,31 +65,35 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT email, username, created_at, is_verified FROM users
+SELECT id, email, username, created_at, is_verified, password_hash FROM users
 WHERE id = $1 LIMIT 1
 `
 
 type GetUserRow struct {
-	Email      string         `json:"email"`
-	Username   sql.NullString `json:"username"`
-	CreatedAt  sql.NullTime   `json:"created_at"`
-	IsVerified sql.NullBool   `json:"is_verified"`
+	ID           int64        `json:"id"`
+	Email        string       `json:"email"`
+	Username     string       `json:"username"`
+	CreatedAt    sql.NullTime `json:"created_at"`
+	IsVerified   sql.NullBool `json:"is_verified"`
+	PasswordHash string       `json:"password_hash"`
 }
 
 func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
 	var i GetUserRow
 	err := row.Scan(
+		&i.ID,
 		&i.Email,
 		&i.Username,
 		&i.CreatedAt,
 		&i.IsVerified,
+		&i.PasswordHash,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT email, username, created_at, is_verified FROM users
+SELECT email, username, created_at, is_verified, password_hash FROM users
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -101,10 +105,11 @@ type ListUsersParams struct {
 }
 
 type ListUsersRow struct {
-	Email      string         `json:"email"`
-	Username   sql.NullString `json:"username"`
-	CreatedAt  sql.NullTime   `json:"created_at"`
-	IsVerified sql.NullBool   `json:"is_verified"`
+	Email        string       `json:"email"`
+	Username     string       `json:"username"`
+	CreatedAt    sql.NullTime `json:"created_at"`
+	IsVerified   sql.NullBool `json:"is_verified"`
+	PasswordHash string       `json:"password_hash"`
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
@@ -121,6 +126,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUse
 			&i.Username,
 			&i.CreatedAt,
 			&i.IsVerified,
+			&i.PasswordHash,
 		); err != nil {
 			return nil, err
 		}

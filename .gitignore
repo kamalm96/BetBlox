@@ -15,3 +15,5 @@ bin/
 *.log
 
 sqlc.gen.*
+app.env
+

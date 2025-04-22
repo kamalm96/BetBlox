@@ -4,11 +4,11 @@ VALUES ($1, $2, $3)
 RETURNING id, email, username, created_at;
 
 -- name: GetUser :one
-SELECT email, username, created_at, is_verified FROM users
+SELECT id, email, username, created_at, is_verified, password_hash FROM users
 WHERE id = $1 LIMIT 1;
 
 -- name: ListUsers :many
-SELECT email, username, created_at, is_verified FROM users
+SELECT email, username, created_at, is_verified, password_hash FROM users
 ORDER BY id
 LIMIT $1
 OFFSET $2;
@@ -38,6 +38,4 @@ FROM users
 ORDER BY id
 LIMIT $1
 OFFSET $2;
-
-
 
