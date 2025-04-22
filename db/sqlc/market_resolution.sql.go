@@ -104,3 +104,30 @@ func (q *Queries) MarkAsResolved(ctx context.Context, arg MarkAsResolvedParams) 
 	)
 	return i, err
 }
+
+const updateResolution = `-- name: UpdateResolution :one
+UPDATE market_resolution
+SET outcome = $1,
+    resolved_at = $2,
+    resolved_by = NOW()
+WHERE market_id = $3
+RETURNING market_id, outcome, resolved_by, resolved_at
+`
+
+type UpdateResolutionParams struct {
+	Outcome    sql.NullString `json:"outcome"`
+	ResolvedAt sql.NullTime   `json:"resolved_at"`
+	MarketID   int64          `json:"market_id"`
+}
+
+func (q *Queries) UpdateResolution(ctx context.Context, arg UpdateResolutionParams) (MarketResolution, error) {
+	row := q.db.QueryRowContext(ctx, updateResolution, arg.Outcome, arg.ResolvedAt, arg.MarketID)
+	var i MarketResolution
+	err := row.Scan(
+		&i.MarketID,
+		&i.Outcome,
+		&i.ResolvedBy,
+		&i.ResolvedAt,
+	)
+	return i, err
+}
