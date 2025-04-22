@@ -17,9 +17,9 @@ WHERE id = $1
 LIMIT 1
 `
 
-func (q *Queries) CheckVerification(ctx context.Context, id int64) (sql.NullBool, error) {
+func (q *Queries) CheckVerification(ctx context.Context, id int64) (bool, error) {
 	row := q.db.QueryRowContext(ctx, checkVerification, id)
-	var is_verified sql.NullBool
+	var is_verified bool
 	err := row.Scan(&is_verified)
 	return is_verified, err
 }
@@ -74,7 +74,7 @@ type GetUserRow struct {
 	Email        string       `json:"email"`
 	Username     string       `json:"username"`
 	CreatedAt    sql.NullTime `json:"created_at"`
-	IsVerified   sql.NullBool `json:"is_verified"`
+	IsVerified   bool         `json:"is_verified"`
 	PasswordHash string       `json:"password_hash"`
 }
 
@@ -108,7 +108,7 @@ type ListUsersRow struct {
 	Email        string       `json:"email"`
 	Username     string       `json:"username"`
 	CreatedAt    sql.NullTime `json:"created_at"`
-	IsVerified   sql.NullBool `json:"is_verified"`
+	IsVerified   bool         `json:"is_verified"`
 	PasswordHash string       `json:"password_hash"`
 }
 
@@ -154,15 +154,15 @@ type ListVerificationsParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]sql.NullBool, error) {
+func (q *Queries) ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]bool, error) {
 	rows, err := q.db.QueryContext(ctx, listVerifications, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []sql.NullBool{}
+	items := []bool{}
 	for rows.Next() {
-		var is_verified sql.NullBool
+		var is_verified bool
 		if err := rows.Scan(&is_verified); err != nil {
 			return nil, err
 		}
@@ -200,8 +200,8 @@ WHERE id = $2
 `
 
 type UpdateVerificationParams struct {
-	IsVerified sql.NullBool `json:"is_verified"`
-	ID         int64        `json:"id"`
+	IsVerified bool  `json:"is_verified"`
+	ID         int64 `json:"id"`
 }
 
 func (q *Queries) UpdateVerification(ctx context.Context, arg UpdateVerificationParams) error {

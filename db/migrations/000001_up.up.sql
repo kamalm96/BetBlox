@@ -4,16 +4,16 @@ CREATE TABLE users (
                        password_hash VARCHAR(255) NOT NULL,
                        username VARCHAR(50) UNIQUE NOT NULL,
                        created_at TIMESTAMP DEFAULT NOW(),
-                       is_verified BOOLEAN DEFAULT FALSE
+                       is_verified BOOLEAN DEFAULT FALSE NOT NULL
 );
 
 CREATE TABLE kyc_verification (
                                   user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-                                  ssn_last4 CHAR(4),
-                                  dob DATE,
-                                  address TEXT,
-                                  kyc_status VARCHAR(20),
-                                  submitted_at TIMESTAMP,
+                                  ssn_last4 CHAR(4) NOT NULL,
+                                  dob DATE NOT NULL,
+                                  address TEXT NOT NULL,
+                                  kyc_status bool DEFAULT FALSE NOT NULL,
+                                  submitted_at TIMESTAMP NOT NULL,
                                   verified_at TIMESTAMP,
                                   PRIMARY KEY(user_id)
 );
