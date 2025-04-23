@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createOrder = `-- name: CreateOrder :one
@@ -17,12 +16,12 @@ RETURNING id, user_id, contract_id, order_type, order_style, price_cents, quanti
 `
 
 type CreateOrderParams struct {
-	UserID     sql.NullInt64  `json:"user_id"`
-	ContractID sql.NullInt64  `json:"contract_id"`
-	OrderType  sql.NullString `json:"order_type"`
-	OrderStyle sql.NullString `json:"order_style"`
-	PriceCents sql.NullInt32  `json:"price_cents"`
-	Quantity   sql.NullInt32  `json:"quantity"`
+	UserID     int64  `json:"user_id"`
+	ContractID int64  `json:"contract_id"`
+	OrderType  string `json:"order_type"`
+	OrderStyle string `json:"order_style"`
+	PriceCents int32  `json:"price_cents"`
+	Quantity   int32  `json:"quantity"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
@@ -133,8 +132,8 @@ WHERE id = $2
 `
 
 type UpdateOrderStatusParams struct {
-	Status sql.NullString `json:"status"`
-	ID     int64          `json:"id"`
+	Status string `json:"status"`
+	ID     int64  `json:"id"`
 }
 
 func (q *Queries) UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusParams) error {

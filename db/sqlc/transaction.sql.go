@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createTransaction = `-- name: CreateTransaction :one
@@ -17,11 +16,11 @@ RETURNING id, user_id, type, amount_cents, balance_after, created_at, reference_
 `
 
 type CreateTransactionParams struct {
-	ID           int64          `json:"id"`
-	UserID       sql.NullInt64  `json:"user_id"`
-	Type         sql.NullString `json:"type"`
-	AmountCents  sql.NullInt64  `json:"amount_cents"`
-	BalanceAfter sql.NullInt64  `json:"balance_after"`
+	ID           int64  `json:"id"`
+	UserID       int64  `json:"user_id"`
+	Type         string `json:"type"`
+	AmountCents  int64  `json:"amount_cents"`
+	BalanceAfter int64  `json:"balance_after"`
 }
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error) {

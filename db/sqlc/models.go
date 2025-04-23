@@ -22,11 +22,11 @@ type AuditLog struct {
 }
 
 type Contract struct {
-	ID           int64          `json:"id"`
-	MarketID     sql.NullInt64  `json:"market_id"`
-	ContractType sql.NullString `json:"contract_type"`
-	PriceCents   sql.NullInt32  `json:"price_cents"`
-	Volume       sql.NullInt64  `json:"volume"`
+	ID           int64         `json:"id"`
+	MarketID     sql.NullInt64 `json:"market_id"`
+	ContractType string        `json:"contract_type"`
+	PriceCents   int32         `json:"price_cents"`
+	Volume       int64         `json:"volume"`
 }
 
 type KycVerification struct {
@@ -51,42 +51,42 @@ type Market struct {
 }
 
 type MarketResolution struct {
-	MarketID   int64          `json:"market_id"`
-	Outcome    sql.NullString `json:"outcome"`
-	ResolvedBy sql.NullInt64  `json:"resolved_by"`
-	ResolvedAt sql.NullTime   `json:"resolved_at"`
+	MarketID   int64     `json:"market_id"`
+	Outcome    string    `json:"outcome"`
+	ResolvedBy int64     `json:"resolved_by"`
+	ResolvedAt time.Time `json:"resolved_at"`
 }
 
 type Order struct {
-	ID         int64          `json:"id"`
-	UserID     sql.NullInt64  `json:"user_id"`
-	ContractID sql.NullInt64  `json:"contract_id"`
-	OrderType  sql.NullString `json:"order_type"`
-	OrderStyle sql.NullString `json:"order_style"`
-	PriceCents sql.NullInt32  `json:"price_cents"`
-	Quantity   sql.NullInt32  `json:"quantity"`
-	Status     sql.NullString `json:"status"`
-	CreatedAt  sql.NullTime   `json:"created_at"`
+	ID         int64        `json:"id"`
+	UserID     int64        `json:"user_id"`
+	ContractID int64        `json:"contract_id"`
+	OrderType  string       `json:"order_type"`
+	OrderStyle string       `json:"order_style"`
+	PriceCents int32        `json:"price_cents"`
+	Quantity   int32        `json:"quantity"`
+	Status     string       `json:"status"`
+	CreatedAt  sql.NullTime `json:"created_at"`
 }
 
 type Trade struct {
-	ID          int64         `json:"id"`
-	BuyOrderID  sql.NullInt64 `json:"buy_order_id"`
-	SellOrderID sql.NullInt64 `json:"sell_order_id"`
-	ContractID  sql.NullInt64 `json:"contract_id"`
-	PriceCents  sql.NullInt32 `json:"price_cents"`
-	Quantity    sql.NullInt32 `json:"quantity"`
-	ExecutedAt  sql.NullTime  `json:"executed_at"`
+	ID          int64     `json:"id"`
+	BuyOrderID  int64     `json:"buy_order_id"`
+	SellOrderID int64     `json:"sell_order_id"`
+	ContractID  int64     `json:"contract_id"`
+	PriceCents  int32     `json:"price_cents"`
+	Quantity    int32     `json:"quantity"`
+	ExecutedAt  time.Time `json:"executed_at"`
 }
 
 type Transaction struct {
-	ID           int64          `json:"id"`
-	UserID       sql.NullInt64  `json:"user_id"`
-	Type         sql.NullString `json:"type"`
-	AmountCents  sql.NullInt64  `json:"amount_cents"`
-	BalanceAfter sql.NullInt64  `json:"balance_after"`
-	CreatedAt    sql.NullTime   `json:"created_at"`
-	ReferenceID  uuid.NullUUID  `json:"reference_id"`
+	ID           int64         `json:"id"`
+	UserID       int64         `json:"user_id"`
+	Type         string        `json:"type"`
+	AmountCents  int64         `json:"amount_cents"`
+	BalanceAfter int64         `json:"balance_after"`
+	CreatedAt    time.Time     `json:"created_at"`
+	ReferenceID  uuid.NullUUID `json:"reference_id"`
 }
 
 type User struct {

@@ -39,48 +39,48 @@ CREATE TABLE markets (
 CREATE TABLE contracts (
                            id BIGSERIAL PRIMARY KEY,
                            market_id BIGINT REFERENCES markets(id) ON DELETE CASCADE,
-                           contract_type VARCHAR(10) CHECK (contract_type IN ('YES', 'NO')),
-                           price_cents INT,
-                           volume BIGINT DEFAULT 0
+                           contract_type VARCHAR(10) CHECK (contract_type IN ('YES', 'NO')) NOT NULL,
+                           price_cents INT NOT NULL ,
+                           volume BIGINT DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE orders (
                         id BIGSERIAL PRIMARY KEY,
-                        user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-                        contract_id BIGINT REFERENCES contracts(id) ON DELETE CASCADE,
-                        order_type VARCHAR(10) CHECK (order_type IN ('buy', 'sell')),
-                        order_style VARCHAR(10) CHECK (order_style IN ('market', 'limit')),
-                        price_cents INT,
-                        quantity INT,
-                        status VARCHAR(10) DEFAULT 'open',
+                        user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+                        contract_id BIGINT REFERENCES contracts(id) ON DELETE CASCADE NOT NULL,
+                        order_type VARCHAR(10) CHECK (order_type IN ('buy', 'sell')) NOT NULL,
+                        order_style VARCHAR(10) CHECK (order_style IN ('market', 'limit')) NOT NULL,
+                        price_cents INT NOT NULL,
+                        quantity INT NOT NULL,
+                        status VARCHAR(10) DEFAULT 'open' NOT NULL,
                         created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE trades (
                         id BIGSERIAL PRIMARY KEY,
-                        buy_order_id BIGINT,
-                        sell_order_id BIGINT,
-                        contract_id BIGINT REFERENCES contracts(id) ON DELETE CASCADE,
-                        price_cents INT,
-                        quantity INT,
-                        executed_at TIMESTAMP DEFAULT NOW()
+                        buy_order_id BIGINT NOT NULL,
+                        sell_order_id BIGINT NOT NULL,
+                        contract_id BIGINT REFERENCES contracts(id) ON DELETE CASCADE NOT NULL,
+                        price_cents INT NOT NULL,
+                        quantity INT NOT NULL,
+                        executed_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
 CREATE TABLE transactions (
                               id BIGSERIAL PRIMARY KEY,
-                              user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-                              type VARCHAR(20),
-                              amount_cents BIGINT,
-                              balance_after BIGINT,
-                              created_at TIMESTAMP DEFAULT NOW(),
+                              user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+                              type VARCHAR(20) NOT NULL,
+                              amount_cents BIGINT NOT NULL,
+                              balance_after BIGINT NOT NULL,
+                              created_at TIMESTAMP DEFAULT NOW() NOT NULL,
                               reference_id UUID DEFAULT gen_random_uuid()
 );
 
 CREATE TABLE market_resolution (
-                                   market_id BIGINT PRIMARY KEY REFERENCES markets(id) ON DELETE CASCADE,
-                                   outcome VARCHAR(10) CHECK (outcome IN ('YES', 'NO')),
-                                   resolved_by BIGINT REFERENCES users(id),
-                                   resolved_at TIMESTAMP DEFAULT NOW()
+                                   market_id BIGINT PRIMARY KEY REFERENCES markets(id) ON DELETE CASCADE NOT NULL,
+                                   outcome VARCHAR(10) CHECK (outcome IN ('YES', 'NO'))NOT NULL ,
+                                   resolved_by BIGINT REFERENCES users(id) NOT NULL ,
+                                   resolved_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
 CREATE TABLE audit_logs (
