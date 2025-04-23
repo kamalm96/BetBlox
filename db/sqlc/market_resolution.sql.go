@@ -7,7 +7,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const getResolution = `-- name: GetResolution :one
@@ -88,9 +88,9 @@ RETURNING market_id, outcome, resolved_by, resolved_at
 `
 
 type MarkAsResolvedParams struct {
-	MarketID   int64          `json:"market_id"`
-	Outcome    sql.NullString `json:"outcome"`
-	ResolvedBy sql.NullInt64  `json:"resolved_by"`
+	MarketID   int64  `json:"market_id"`
+	Outcome    string `json:"outcome"`
+	ResolvedBy int64  `json:"resolved_by"`
 }
 
 func (q *Queries) MarkAsResolved(ctx context.Context, arg MarkAsResolvedParams) (MarketResolution, error) {
@@ -115,9 +115,9 @@ RETURNING market_id, outcome, resolved_by, resolved_at
 `
 
 type UpdateResolutionParams struct {
-	Outcome    sql.NullString `json:"outcome"`
-	ResolvedAt sql.NullTime   `json:"resolved_at"`
-	MarketID   int64          `json:"market_id"`
+	Outcome    string    `json:"outcome"`
+	ResolvedAt time.Time `json:"resolved_at"`
+	MarketID   int64     `json:"market_id"`
 }
 
 func (q *Queries) UpdateResolution(ctx context.Context, arg UpdateResolutionParams) (MarketResolution, error) {

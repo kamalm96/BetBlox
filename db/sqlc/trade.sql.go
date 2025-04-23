@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createTrade = `-- name: CreateTrade :one
@@ -17,11 +16,11 @@ RETURNING id, buy_order_id, sell_order_id, contract_id, price_cents, quantity, e
 `
 
 type CreateTradeParams struct {
-	BuyOrderID  sql.NullInt64 `json:"buy_order_id"`
-	SellOrderID sql.NullInt64 `json:"sell_order_id"`
-	ContractID  sql.NullInt64 `json:"contract_id"`
-	PriceCents  sql.NullInt32 `json:"price_cents"`
-	Quantity    sql.NullInt32 `json:"quantity"`
+	BuyOrderID  int64 `json:"buy_order_id"`
+	SellOrderID int64 `json:"sell_order_id"`
+	ContractID  int64 `json:"contract_id"`
+	PriceCents  int32 `json:"price_cents"`
+	Quantity    int32 `json:"quantity"`
 }
 
 func (q *Queries) CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error) {

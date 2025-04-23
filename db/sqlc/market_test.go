@@ -74,7 +74,7 @@ func TestListAllMarkets(t *testing.T) {
 	}
 	markets, err := testQueries.ListAllMarkets(context.Background(), arg)
 	require.NoError(t, err)
-	require.LessOrEqual(t, len(markets), 5)
+	require.Len(t, markets, int(arg.Limit))
 }
 
 func TestListAllOpenMarkets(t *testing.T) {

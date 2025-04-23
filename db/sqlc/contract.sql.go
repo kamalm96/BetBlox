@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createContract = `-- name: CreateContract :one
@@ -17,8 +16,8 @@ RETURNING id, market_id, contract_type, price_cents, volume
 `
 
 type CreateContractParams struct {
-	ContractType sql.NullString `json:"contract_type"`
-	PriceCents   sql.NullInt32  `json:"price_cents"`
+	ContractType string `json:"contract_type"`
+	PriceCents   int32  `json:"price_cents"`
 }
 
 func (q *Queries) CreateContract(ctx context.Context, arg CreateContractParams) (Contract, error) {
