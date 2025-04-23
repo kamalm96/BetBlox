@@ -11,7 +11,7 @@ import (
 )
 
 func CreateRandomMarket(t *testing.T) Market {
-	statuses := []string{"open", "closed", "resolved"} // lowercase & standardized
+	statuses := []string{"open", "closed", "resolved"}
 
 	arg := CreateMarketParams{
 		Title:       utils.RandomString(10),
