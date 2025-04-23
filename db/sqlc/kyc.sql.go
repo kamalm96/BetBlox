@@ -70,47 +70,6 @@ func (q *Queries) GetKyc(ctx context.Context, userID int64) (KycVerification, er
 	return i, err
 }
 
-const listKycs = `-- name: ListKycs :many
-SELECT user_id, ssn_last4, dob, address, kyc_status, submitted_at, verified_at FROM kyc_verification ORDER BY user_id
-LIMIT $1 OFFSET $2
-`
-
-type ListKycsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) ListKycs(ctx context.Context, arg ListKycsParams) ([]KycVerification, error) {
-	rows, err := q.db.QueryContext(ctx, listKycs, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []KycVerification{}
-	for rows.Next() {
-		var i KycVerification
-		if err := rows.Scan(
-			&i.UserID,
-			&i.SsnLast4,
-			&i.Dob,
-			&i.Address,
-			&i.KycStatus,
-			&i.SubmittedAt,
-			&i.VerifiedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const updateKycStatus = `-- name: UpdateKycStatus :exec
 UPDATE kyc_verification
 SET kyc_status = $2 WHERE user_id = $1
