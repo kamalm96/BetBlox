@@ -17,6 +17,7 @@ type Querier interface {
 	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
 	CreateTrade(ctx context.Context, arg CreateTradeParams) (Trade, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
+	CreateWallet(ctx context.Context, arg CreateWalletParams) (Wallet, error)
 	DeleteContract(ctx context.Context, id int64) error
 	DeleteMarket(ctx context.Context, id int64) error
 	DeleteOrder(ctx context.Context, id int64) error
@@ -35,14 +36,12 @@ type Querier interface {
 	IsMarketResolved(ctx context.Context, marketID int64) (bool, error)
 	ListAllMarkets(ctx context.Context, arg ListAllMarketsParams) ([]Market, error)
 	ListContracts(ctx context.Context, arg ListContractsParams) ([]Contract, error)
-	ListKycs(ctx context.Context, arg ListKycsParams) ([]KycVerification, error)
 	ListOpenMarkets(ctx context.Context, arg ListOpenMarketsParams) ([]Market, error)
 	ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error)
 	ListResolutions(ctx context.Context, arg ListResolutionsParams) ([]MarketResolution, error)
 	ListTrades(ctx context.Context, arg ListTradesParams) ([]Trade, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
 	ListVerifications(ctx context.Context, arg ListVerificationsParams) ([]bool, error)
-	ListWallets(ctx context.Context, arg ListWalletsParams) ([]Wallet, error)
 	LogAudit(ctx context.Context, arg LogAuditParams) error
 	MarkAsResolved(ctx context.Context, arg MarkAsResolvedParams) (MarketResolution, error)
 	ResolveMarket(ctx context.Context, arg ResolveMarketParams) error

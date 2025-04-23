@@ -12,6 +12,35 @@ import (
 	"github.com/sqlc-dev/pqtype"
 )
 
+const createWallet = `-- name: CreateWallet :one
+INSERT INTO wallets (user_id, balance_cents, locked_cents, updated_at)
+VALUES ($1,$2,$3,$4) RETURNING user_id, balance_cents, locked_cents, updated_at
+`
+
+type CreateWalletParams struct {
+	UserID       int64        `json:"user_id"`
+	BalanceCents int64        `json:"balance_cents"`
+	LockedCents  int64        `json:"locked_cents"`
+	UpdatedAt    sql.NullTime `json:"updated_at"`
+}
+
+func (q *Queries) CreateWallet(ctx context.Context, arg CreateWalletParams) (Wallet, error) {
+	row := q.db.QueryRowContext(ctx, createWallet,
+		arg.UserID,
+		arg.BalanceCents,
+		arg.LockedCents,
+		arg.UpdatedAt,
+	)
+	var i Wallet
+	err := row.Scan(
+		&i.UserID,
+		&i.BalanceCents,
+		&i.LockedCents,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getWallet = `-- name: GetWallet :one
 SELECT user_id, balance_cents, locked_cents, updated_at FROM wallets
 WHERE user_id = $1 LIMIT 1
@@ -29,48 +58,10 @@ func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
 	return i, err
 }
 
-const listWallets = `-- name: ListWallets :many
-SELECT  user_id, balance_cents, locked_cents, updated_at FROM wallets ORDER BY user_id
-LIMIT $1
-OFFSET $2
-`
-
-type ListWalletsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) ListWallets(ctx context.Context, arg ListWalletsParams) ([]Wallet, error) {
-	rows, err := q.db.QueryContext(ctx, listWallets, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Wallet{}
-	for rows.Next() {
-		var i Wallet
-		if err := rows.Scan(
-			&i.UserID,
-			&i.BalanceCents,
-			&i.LockedCents,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const logAudit = `-- name: LogAudit :exec
 INSERT INTO audit_logs (user_id, action, metadata, ip_address)
 VALUES ($1, $2, $3, $4)
+RETURNING id, user_id, action, metadata, ip_address, created_at
 `
 
 type LogAuditParams struct {
@@ -98,8 +89,8 @@ RETURNING user_id, balance_cents, locked_cents, updated_at
 `
 
 type UpdateLockedParams struct {
-	UserID      int64         `json:"user_id"`
-	LockedCents sql.NullInt64 `json:"locked_cents"`
+	UserID      int64 `json:"user_id"`
+	LockedCents int64 `json:"locked_cents"`
 }
 
 func (q *Queries) UpdateLocked(ctx context.Context, arg UpdateLockedParams) (Wallet, error) {
@@ -122,8 +113,8 @@ RETURNING user_id, balance_cents, locked_cents, updated_at
 `
 
 type UpdateWalletParams struct {
-	UserID       int64         `json:"user_id"`
-	BalanceCents sql.NullInt64 `json:"balance_cents"`
+	UserID       int64 `json:"user_id"`
+	BalanceCents int64 `json:"balance_cents"`
 }
 
 func (q *Queries) UpdateWallet(ctx context.Context, arg UpdateWalletParams) (Wallet, error) {

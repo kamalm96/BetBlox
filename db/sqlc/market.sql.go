@@ -7,7 +7,7 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createMarket = `-- name: CreateMarket :one
@@ -18,12 +18,12 @@ RETURNING id, title, description, category, status, created_at, closes_at, resol
 `
 
 type CreateMarketParams struct {
-	Title       string         `json:"title"`
-	Description sql.NullString `json:"description"`
-	Category    sql.NullString `json:"category"`
-	Status      sql.NullString `json:"status"`
-	ClosesAt    sql.NullTime   `json:"closes_at"`
-	ResolvesAt  sql.NullTime   `json:"resolves_at"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	Status      string    `json:"status"`
+	ClosesAt    time.Time `json:"closes_at"`
+	ResolvesAt  time.Time `json:"resolves_at"`
 }
 
 func (q *Queries) CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error) {
@@ -175,8 +175,8 @@ WHERE id = $2
 `
 
 type ResolveMarketParams struct {
-	Status sql.NullString `json:"status"`
-	ID     int64          `json:"id"`
+	Status string `json:"status"`
+	ID     int64  `json:"id"`
 }
 
 func (q *Queries) ResolveMarket(ctx context.Context, arg ResolveMarketParams) error {

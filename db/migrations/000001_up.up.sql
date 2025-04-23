@@ -20,20 +20,20 @@ CREATE TABLE kyc_verification (
 
 CREATE TABLE wallets (
                          user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-                         balance_cents BIGINT DEFAULT 0,
-                         locked_cents BIGINT DEFAULT 0,
+                         balance_cents BIGINT DEFAULT 0 NOT NULL,
+                         locked_cents BIGINT DEFAULT 0 NOT NULL,
                          updated_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE markets (
                          id BIGSERIAL PRIMARY KEY,
                          title TEXT NOT NULL,
-                         description TEXT,
-                         category VARCHAR(100),
-                         status VARCHAR(20),
-                         created_at TIMESTAMP DEFAULT NOW(),
-                         closes_at TIMESTAMP,
-                         resolves_at TIMESTAMP
+                         description TEXT NOT NULL,
+                         category VARCHAR(100) NOT NULL,
+                         status VARCHAR(20) NOT NULL,
+                         created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+                         closes_at TIMESTAMP NOT NULL,
+                         resolves_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE contracts (

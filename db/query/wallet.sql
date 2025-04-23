@@ -1,11 +1,10 @@
+-- name: CreateWallet :one
+INSERT INTO wallets (user_id, balance_cents, locked_cents, updated_at)
+VALUES ($1,$2,$3,$4) RETURNING *;
+
 -- name: GetWallet :one
 SELECT * FROM wallets
 WHERE user_id = $1 LIMIT 1;
-
--- name: ListWallets :many
-SELECT  * FROM wallets ORDER BY user_id
-LIMIT $1
-OFFSET $2;
 
 -- name: UpdateWallet :one
 UPDATE wallets
@@ -21,7 +20,8 @@ RETURNING *;
 
 -- name: LogAudit :exec
 INSERT INTO audit_logs (user_id, action, metadata, ip_address)
-VALUES ($1, $2, $3, $4);
+VALUES ($1, $2, $3, $4)
+RETURNING *;
 
 
 

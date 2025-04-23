@@ -40,14 +40,14 @@ type KycVerification struct {
 }
 
 type Market struct {
-	ID          int64          `json:"id"`
-	Title       string         `json:"title"`
-	Description sql.NullString `json:"description"`
-	Category    sql.NullString `json:"category"`
-	Status      sql.NullString `json:"status"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
-	ClosesAt    sql.NullTime   `json:"closes_at"`
-	ResolvesAt  sql.NullTime   `json:"resolves_at"`
+	ID          int64     `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	Status      string    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	ClosesAt    time.Time `json:"closes_at"`
+	ResolvesAt  time.Time `json:"resolves_at"`
 }
 
 type MarketResolution struct {
@@ -99,8 +99,8 @@ type User struct {
 }
 
 type Wallet struct {
-	UserID       int64         `json:"user_id"`
-	BalanceCents sql.NullInt64 `json:"balance_cents"`
-	LockedCents  sql.NullInt64 `json:"locked_cents"`
-	UpdatedAt    sql.NullTime  `json:"updated_at"`
+	UserID       int64        `json:"user_id"`
+	BalanceCents int64        `json:"balance_cents"`
+	LockedCents  int64        `json:"locked_cents"`
+	UpdatedAt    sql.NullTime `json:"updated_at"`
 }
